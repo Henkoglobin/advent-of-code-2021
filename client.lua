@@ -23,8 +23,8 @@ return {
             {}
         )
 
-        local headers, stream = request:go()
-        local body = stream:get_body_as_string()
+        local headers, stream = assert(request:go())
+        local body = assert(stream:get_body_as_string())
 
         return body
     end,
