@@ -59,4 +59,42 @@ return {
 
         return gamma * epsilon
     end,
+
+    findByMostOrLeastCommonBit = function(self, mode)
+        local firstLine = self.reportData:first()
+        local numBits = #firstLine
+
+        local preFiltered = self.reportData
+        for i = 1, numBits do
+            local count = preFiltered:count()
+
+            if count == 1 then
+                return preFiltered:single()
+            end
+
+            local sumAtIndex = preFiltered:sum(function(bits) return bits[i] end)
+
+            local mostCommonBit = (sumAtIndex >= count / 2) and 1 or 0
+
+            preFiltered = preFiltered:where(function(bits) 
+                if mode == "most" then
+                    return bits[i] == mostCommonBit
+                else
+                    return bits[i] ~= mostCommonBit 
+                end
+            end)
+        end
+
+        return preFiltered:single()
+    end,
+
+    puzzle2 = function(self)
+        local oxygenGeneratorRatingBits = self:findByMostOrLeastCommonBit("most")
+        local co2ScrubberRatingBits = self:findByMostOrLeastCommonBit("least")
+
+        local oxygenGeneratorRating = self:bitsToNumber(oxygenGeneratorRatingBits)
+        local co2ScrubberRatingBits = self:bitsToNumber(co2ScrubberRatingBits)
+
+        return oxygenGeneratorRating * co2ScrubberRatingBits
+    end,
 }
