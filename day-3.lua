@@ -6,7 +6,12 @@ local client = require("client")
 return {
     init = function(self)
         self.reportData = linq.from(client:getDayInput(3):trim():split("\n"))
-            :select(function(v, k) return v:totable(), k end)
+            :select(function(v, k) 
+                local bits = linq.from(v:totable())
+                    :select(function(bit, i) return tonumber(bit), i end)
+                    :toArray()
+                return bits, k 
+            end)
     end,
 
     bitsToNumber = function(self, bits)
